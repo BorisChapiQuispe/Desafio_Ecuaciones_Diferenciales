@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conectando Saberes: Alfabetización Digital EDO</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- KaTeX for math rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#075985',
+                            800: '#0c4a6e',
+                        },
+                        heun: '#f59e0b',
+                        rk4: '#10b981',
+                        exact: '#3b82f6'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+
+    <!-- HEADER / HERO SECTION -->
+    <header class="bg-gradient-to-r from-slate-900 via-brand-800 to-slate-900 text-white shadow-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+                <div class="space-y-3 max-w-3xl">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 bg-brand-500/20 border border-brand-400/30 rounded-full text-brand-200 text-xs font-semibold uppercase tracking-wider">
+                        <i class="fa-solid fa-calculator"></i> Desafío de Ecuaciones Diferenciales Ordinarias (EDO)
+                    </div>
+                    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight">
+                        Conectando Saberes: Alfabetización Digital de Adultos Mayores
+                    </h1>
+                    <p class="text-slate-300 text-base sm:text-lg">
+                        Modelado matemático mediante EDO de primer orden con solución analítica exacta y métodos numéricos de <strong>Heun (RK2)</strong> y <strong>Runge-Kutta de 4.º Orden (RK4)</strong>.
+                    </p>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <a href="#simulador" class="inline-flex items-center justify-center px-5 py-3 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-semibold shadow-lg shadow-brand-500/30 transition-all duration-200 gap-2">
+                        <i class="fa-solid fa-sliders"></i> Ir al Simulador
+                    </a>
+                    <a href="#modelo-matematico" class="inline-flex items-center justify-center px-5 py-3 rounded-xl bg-slate-800/80 hover:bg-slate-800 text-slate-200 font-semibold border border-slate-700 transition-all duration-200 gap-2">
+                        <i class="fa-solid fa-book-bookmark"></i> Modelo EDO
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10 flex-grow w-full">
+
+        <!-- CONTEXTO Y DESCRIPCIÓN DEL PROBLEMA -->
+        <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-4">
+                <div class="flex items-center gap-3 text-brand-600 font-bold text-lg">
+                    <span class="w-10 h-10 rounded-xl bg-brand-50 flex items-center justify-center text-brand-600 shadow-sm border border-brand-100">
+                        <i class="fa-solid fa-users-line"></i>
+                    </span>
+                    <h2>Contexto y Relevancia Social</h2>
+                </div>
+                <p class="text-slate-600 leading-relaxed text-justify">
+                    En la actualidad, gran parte de los adultos mayores de nuestra comunidad enfrentan serias barreras para acceder a trámites públicos en línea, gestionar citas de salud o comunicarse activamente con sus familias debido a la brecha digital. Este proyecto modela la evolución temporal del aprendizaje y la adopción tecnológica en un centro comunitario de alfabetización digital.
+                </p>
+                <div class="bg-slate-50 border-l-4 border-brand-500 p-4 rounded-r-xl space-y-1">
+                    <h3 class="font-semibold text-slate-800 text-sm">Pregunta Guía del Desafío:</h3>
+                    <p class="text-slate-600 italic text-sm">
+                        «¿Cómo puede una ecuación diferencial de primer orden ayudarnos a comprender y mejorar una situación de nuestra comunidad, y qué tan precisas son las aproximaciones de Heun y RK4?»
+                    </p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-4 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center gap-3 text-emerald-600 font-bold text-lg mb-3">
+                        <span class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 shadow-sm border border-emerald-100">
+                            <i class="fa-solid fa-bullseye"></i>
+                        </span>
+                        <h2>Meta Cuantificable</h2>
+                    </div>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        Predecir la velocidad de integración tecnológica del grupo de adultos mayores para determinar con exactitud en qué semana se alcanza la alfabetización de al menos el <strong>90% de la población inscrita</strong>, optimizando la asignación de voluntariado y equipamiento.
+                    </p>
+                </div>
+                <div class="pt-4 border-t border-slate-100 grid grid-cols-2 gap-2 text-center text-xs">
+                    <div class="p-2 bg-slate-50 rounded-lg">
+                        <span class="block text-slate-400 font-medium">Método 1</span>
+                        <span class="font-bold text-heun text-sm">Heun (RK2)</span>
+                    </div>
+                    <div class="p-2 bg-slate-50 rounded-lg">
+                        <span class="block text-slate-400 font-medium">Método 2</span>
+                        <span class="font-bold text-rk4 text-sm">RK4</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODELO MATEMÁTICO Y EDO -->
+        <section id="modelo-matematico" class="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-6">
+            <div class="border-b border-slate-100 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-square-root-variable text-brand-600"></i>
+                        Modelo Matemático y Solución Analítica
+                    </h2>
+                    <p class="text-slate-500 text-sm">Definición rigurosa del sistema dinámico de primer orden</p>
+                </div>
+                <span class="px-3 py-1 bg-brand-50 text-brand-700 text-xs font-semibold rounded-lg border border-brand-200 w-fit">
+                    EDO Lineal Separable
+                </span>
+            </div>
+
+            <!-- EDO Y DEMO -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- EDO & Variables -->
+                <div class="space-y-4">
+                    <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                        <i class="fa-solid fa-list-check text-brand-500"></i>
+                        Ecuación Diferencial y Variables
+                    </h3>
+                    <div class="p-4 bg-slate-900 text-white rounded-xl text-center shadow-inner font-mono text-lg">
+                        $$\frac{dy}{dt} = k(N - y)$$
+                    </div>
+
+                    <!-- TABLA DEFINICIÓN DE VARIABLES -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm border-collapse">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-700 uppercase text-xs">
+                                    <th class="p-2.5 rounded-l-lg">Símbolo</th>
+                                    <th class="p-2.5">Variable / Parámetro</th>
+                                    <th class="p-2.5 rounded-r-lg">Unidades / Significado</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 text-slate-600">
+                                <tr>
+                                    <td class="p-2.5 font-bold text-brand-600">$y(t)$</td>
+                                    <td class="p-2.5 font-medium text-slate-800">Variable Dependiente</td>
+                                    <td class="p-2.5">Adultos mayores alfabetizados en el tiempo $t$ [personas]</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2.5 font-bold text-brand-600">$t$</td>
+                                    <td class="p-2.5 font-medium text-slate-800">Variable Independiente</td>
+                                    <td class="p-2.5">Tiempo transcurrido desde el inicio [semanas]</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2.5 font-bold text-brand-600">$N$</td>
+                                    <td class="p-2.5 font-medium text-slate-800">Parámetro (Constante)</td>
+                                    <td class="p-2.5">Población total objetivo inscrita [personas]</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2.5 font-bold text-brand-600">$k$</td>
+                                    <td class="p-2.5 font-medium text-slate-800">Parámetro (Constante)</td>
+                                    <td class="p-2.5">Tasa efectiva de aprendizaje/adopción [$\text{semana}^{-1}$]</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2.5 font-bold text-brand-600">$y_0$</td>
+                                    <td class="p-2.5 font-medium text-slate-800">Condición Inicial $y(0)$</td>
+                                    <td class="p-2.5">Personas con conocimientos previos en $t=0$ [personas]</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Solución Exacta & Demostración -->
+                <div class="space-y-4">
+                    <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                        <i class="fa-solid fa-graduation-cap text-emerald-500"></i>
+                        Solución Analítica (Exacta) y Verificación
+                    </h3>
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        Separando variables de la EDO: $\frac{dy}{N - y} = k \, dt$. Integrando ambos miembros e imponiendo la condición inicial $y(0) = y_0$, obtenemos la función exacta:
+                    </p>
+                    <div class="p-4 bg-emerald-950 text-emerald-200 rounded-xl text-center font-mono text-lg shadow-inner">
+                        $$y(t) = N - (N - y_0) e^{-kt}$$
+                    </div>
+                    <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-xs text-slate-600 space-y-2">
+                        <span class="font-semibold text-slate-800 block">Comprobación por sustitución:</span>
+                        <ul class="list-disc pl-4 space-y-1">
+                            <li><strong>Derivada:</strong> $y'(t) = - (N - y_0)(-k) e^{-kt} = k(N - y_0) e^{-kt} = k(N - y(t)) \quad \checkmark$</li>
+                            <li><strong>Condición Inicial:</strong> $y(0) = N - (N - y_0) e^0 = N - N + y_0 = y_0 \quad \checkmark$</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SIMULADOR INTERACTIVO -->
+        <section id="simulador" class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- PANEL DE CONTROL (INPUTS) -->
+            <div class="lg:col-span-4 bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-5 h-fit">
+                <div class="border-b border-slate-100 pb-3 flex items-center justify-between">
+                    <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-sliders text-brand-600"></i>
+                        Parámetros de Simulación
+                    </h2>
+                    <button id="btnReset" class="text-xs text-slate-400 hover:text-brand-600 transition-colors">
+                        <i class="fa-solid fa-rotate-left"></i> Restablecer
+                    </button>
+                </div>
+
+                <div class="space-y-4">
+                    <!-- Input N -->
+                    <div>
+                        <div class="flex justify-between items-center text-sm font-semibold text-slate-700 mb-1">
+                            <label for="inputN">Población Meta ($N$)</label>
+                            <span id="valN" class="text-brand-600 font-bold bg-brand-50 px-2 py-0.5 rounded text-xs">50 personas</span>
+                        </div>
+                        <input type="range" id="inputN" min="10" max="200" step="5" value="50" class="w-full accent-brand-600 cursor-pointer">
+                    </div>
+
+                    <!-- Input y0 -->
+                    <div>
+                        <div class="flex justify-between items-center text-sm font-semibold text-slate-700 mb-1">
+                            <label for="inputY0">Condición Inicial ($y_0$)</label>
+                            <span id="valY0" class="text-brand-600 font-bold bg-brand-50 px-2 py-0.5 rounded text-xs">5 personas</span>
+                        </div>
+                        <input type="range" id="inputY0" min="0" max="40" step="1" value="5" class="w-full accent-brand-600 cursor-pointer">
+                    </div>
+
+                    <!-- Input k -->
+                    <div>
+                        <div class="flex justify-between items-center text-sm font-semibold text-slate-700 mb-1">
+                            <label for="inputK">Tasa de Aprendizaje ($k$)</label>
+                            <span id="valK" class="text-brand-600 font-bold bg-brand-50 px-2 py-0.5 rounded text-xs">0.25 1/sem</span>
+                        </div>
+                        <input type="range" id="inputK" min="0.05" max="1.0" step="0.05" value="0.25" class="w-full accent-brand-600 cursor-pointer">
+                    </div>
+
+                    <!-- Input t_max -->
+                    <div>
+                        <div class="flex justify-between items-center text-sm font-semibold text-slate-700 mb-1">
+                            <label for="inputTMax">Tiempo Total ($t_{\text{max}}$)</label>
+                            <span id="valTMax" class="text-brand-600 font-bold bg-brand-50 px-2 py-0.5 rounded text-xs">12 semanas</span>
+                        </div>
+                        <input type="range" id="inputTMax" min="4" max="30" step="1" value="12" class="w-full accent-brand-600 cursor-pointer">
+                    </div>
+
+                    <!-- Input h (Tamaño de paso) -->
+                    <div class="pt-2 border-t border-slate-100">
+                        <label for="selectH" class="block text-sm font-semibold text-slate-700 mb-1">
+                            Tamaño de Paso ($h$) - Evaluación de Precisión
+                        </label>
+                        <select id="selectH" class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-xl p-2.5 focus:ring-2 focus:ring-brand-500 focus:border-brand-500">
+                            <option value="1.0">h = 1.0 semana (Paso grande)</option>
+                            <option value="0.5" selected>h = 0.5 semanas (Paso estándar)</option>
+                            <option value="0.25">h = 0.25 semanas (Paso fino)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- CARDS CON RESULTADOS RÁPIDOS -->
+                <div class="pt-3 border-t border-slate-100 grid grid-cols-2 gap-3 text-center">
+                    <div class="p-3 bg-amber-50 rounded-xl border border-amber-200">
+                        <span class="block text-xs font-semibold text-amber-700 uppercase">Error Máx Heun</span>
+                        <span id="statErrorHeun" class="text-base font-extrabold text-amber-800">0.00 %</span>
+                    </div>
+                    <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-200">
+                        <span class="block text-xs font-semibold text-emerald-700 uppercase">Error Máx RK4</span>
+                        <span id="statErrorRK4" class="text-base font-extrabold text-emerald-800">0.00 %</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VISUALIZACIÓN CON GRÁFICOS CHART.JS -->
+            <div class="lg:col-span-8 space-y-6">
+                <!-- Gráfica Principal: Soluciones -->
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-3">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                        <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                            <i class="fa-solid fa-chart-line text-brand-600"></i>
+                            Comparativa: Solución Analítica vs Heun vs RK4
+                        </h3>
+                        <div class="flex items-center gap-4 text-xs font-semibold">
+                            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-exact inline-block"></span> Analítica</span>
+                            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-heun inline-block"></span> Heun (RK2)</span>
+                            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-rk4 inline-block"></span> RK4</span>
+                        </div>
+                    </div>
+                    <div class="h-72 sm:h-80 w-full">
+                        <canvas id="chartSoluciones"></canvas>
+                    </div>
+                </div>
+
+                <!-- Gráfica Secundaria: Errores Relativos -->
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-3">
+                    <div class="border-b border-slate-100 pb-3">
+                        <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                            <i class="fa-solid fa-chart-area text-rose-500"></i>
+                            Evolución del Error Relativo Porcentual (%)
+                        </h3>
+                    </div>
+                    <div class="h-48 sm:h-56 w-full">
+                        <canvas id="chartErrores"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TABLA COMPARATIVA DE PASOS / ITERACIONES -->
+        <section class="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-table text-brand-600"></i>
+                        Tabla Comparativa Iterativa por Pasos
+                    </h2>
+                    <p class="text-slate-500 text-sm">Desglose numérico paso a paso con errores absolutos y relativos porcentuales</p>
+                </div>
+                <button id="btnExport" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl border border-slate-300 transition-colors inline-flex items-center gap-2 w-fit">
+                    <i class="fa-solid fa-file-csv"></i> Exportar Datos
+                </button>
+            </div>
+
+            <div class="overflow-x-auto max-h-96 overflow-y-auto border border-slate-200 rounded-xl">
+                <table class="w-full text-left text-xs sm:text-sm border-collapse">
+                    <thead class="sticky top-0 bg-slate-900 text-white z-10">
+                        <tr>
+                            <th class="p-3 text-center">Paso ($i$)</th>
+                            <th class="p-3 text-center">Tiempo ($t$)</th>
+                            <th class="p-3 text-right">Analítica ($y_{ex}$)</th>
+                            <th class="p-3 text-right text-amber-300">Heun ($y_H$)</th>
+                            <th class="p-3 text-right">Error Abs Heun</th>
+                            <th class="p-3 text-right text-amber-300">Error Rel % Heun</th>
+                            <th class="p-3 text-right text-emerald-300">RK4 ($y_{RK4}$)</th>
+                            <th class="p-3 text-right">Error Abs RK4</th>
+                            <th class="p-3 text-right text-emerald-300">Error Rel % RK4</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody" class="divide-y divide-slate-100 font-mono text-slate-700">
+                        <!-- Renderizado dinámico con JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- INTERPRETACIÓN Y RESPUESTA A PREGUNTA GUÍA -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Respuesta a la Pregunta Guía -->
+            <div class="bg-gradient-to-br from-slate-900 to-brand-900 text-white rounded-2xl p-6 sm:p-8 space-y-4 shadow-md">
+                <div class="flex items-center gap-3 text-brand-300 font-bold text-lg">
+                    <span class="w-10 h-10 rounded-xl bg-brand-500/20 flex items-center justify-center text-brand-300 border border-brand-400/30">
+                        <i class="fa-solid fa-comment-dots"></i>
+                    </span>
+                    <h2>Respuesta a la Pregunta Guía</h2>
+                </div>
+                <div class="space-y-3 text-slate-200 text-sm leading-relaxed">
+                    <p>
+                        <strong>1. Comprensión y Mejora Comunitaria:</strong> La EDO $dy/dt = k(N-y)$ demuestra que el aprendizaje no es lineal; presenta una aceleración inicial alta que se desacelera a medida que disminuyen los adultos mayores por alfabetizar. Esto permite al centro comunitario planificar turnos de voluntarios y equipos de forma óptima en cada fase del programa.
+                    </p>
+                    <p>
+                        <strong>2. Precisión Numérica Comparada:</strong> El método de <strong>Heun (RK2)</strong> ofrece una aproximación aceptable para análisis rápidos, pero acumula un error relativo visible al aumentar el paso $h$. En cambio, <strong>Runge-Kutta 4 (RK4)</strong> exhibe una precisión extraordinaria, solapándose prácticamente con la solución exacta analítica y registrando errores relativos porcentuales casi nulos ($<0.01\%$), haciéndolo el método preferido para simulaciones de alta fidelidad.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Conclusiones Prácticas -->
+            <div class="bg-white rounded-2xl p-6 sm:p-8 space-y-4 shadow-sm border border-slate-200">
+                <div class="flex items-center gap-3 text-slate-800 font-bold text-lg">
+                    <span class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 shadow-sm border border-emerald-100">
+                        <i class="fa-solid fa-lightbulb"></i>
+                    </span>
+                    <h2>Conclusiones e Interpretación</h2>
+                </div>
+                <ul class="space-y-3 text-slate-600 text-sm leading-relaxed">
+                    <li class="flex items-start gap-2">
+                        <i class="fa-solid fa-circle-check text-emerald-500 mt-1"></i>
+                        <span><strong>Meta del 90%:</strong> Con los parámetros por defecto ($N=50, y_0=5, k=0.25$), se alcanza la meta de 45 personas alfabetizadas aproximadamente en la <strong>semana 9</strong>.</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fa-solid fa-circle-check text-emerald-500 mt-1"></i>
+                        <span><strong>Efecto del paso $h$:</strong> Reducir el paso $h$ de 1.0 a 0.25 disminuye el error máximo de Heun de manera cuadrática y el de RK4 de forma de orden 4, confirmando la convergencia matemática teórica.</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fa-solid fa-triangle-exclamation text-amber-500 mt-1"></i>
+                        <span><strong>Limitaciones:</strong> El modelo asume tasa de aprendizaje $k$ constante y asistencia homogénea, sin considerar eventuales desercciones o imprevistos externos.</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-6 border-t border-slate-800 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-2">
+            <p>Desafío Individual de Ecuaciones Diferenciales Ordinarias y Métodos Numéricos — 2026</p>
+            <p class="text-slate-500">Desarrollado con HTML5, Tailwind CSS, Chart.js y KaTeX. Libre distribución para fines educativos.</p>
+        </div>
+    </footer>
+
+    <!-- LOGICA JAVASCRIPT DEL SIMULADOR -->
+    <script>
+        // --- 1. ESTADO DE LOS PARÁMETROS Y VARIABLES DE SIMULACIÓN ---
+        let params = {
+            N: 50,
+            y0: 5,
+            k: 0.25,
+            tMax: 12,
+            h: 0.5
+        };
+
+        let simulationData = [];
+        let chartSolucionesInstance = null;
+        let chartErroresInstance = null;
+
+        // --- 2. FUNCIÓN EDO f(t, y) ---
+        function f(t, y) {
+            return params.k * (params.N - y);
+        }
+
+        // --- 3. SOLUCIÓN ANALÍTICA EXACTA ---
+        function yExacta(t) {
+            return params.N - (params.N - params.y0) * Math.exp(-params.k * t);
+        }
+
+        // --- 4. MOTOR DE CÁLCULO NUMÉRICO (HEUN Y RK4) ---
+        function runSimulation() {
+            simulationData = [];
+            let t = 0;
+            let yH = params.y0;
+            let yRK4 = params.y0;
+            let step = 0;
+
+            let numSteps = Math.floor(params.tMax / params.h);
+
+            for (let i = 0; i <= numSteps; i++) {
+                t = i * params.h;
+                if (t > params.tMax) break;
+
+                let yEx = yExacta(t);
+
+                // Errores Heun
+                let errAbsH = Math.abs(yEx - yH);
+                let errRelH = yEx !== 0 ? (errAbsH / Math.abs(yEx)) * 100 : 0;
+
+                // Errores RK4
+                let errAbsRK4 = Math.abs(yEx - yRK4);
+                let errRelRK4 = yEx !== 0 ? (errAbsRK4 / Math.abs(yEx)) * 100 : 0;
+
+                // Guardar punto actual
+                simulationData.push({
+                    step: i,
+                    t: t,
+                    yEx: yEx,
+                    yH: yH,
+                    errAbsH: errAbsH,
+                    errRelH: errRelH,
+                    yRK4: yRK4,
+                    errAbsRK4: errAbsRK4,
+                    errRelRK4: errRelRK4
+                });
+
+                // --- Siguiente paso: Método de Heun (RK2) ---
+                let k1_H = f(t, yH);
+                let y_predictor = yH + params.h * k1_H;
+                let k2_H = f(t + params.h, y_predictor);
+                let yH_next = yH + (params.h / 2) * (k1_H + k2_H);
+
+                // --- Siguiente paso: RK4 ---
+                let k1 = f(t, yRK4);
+                let k2 = f(t + params.h / 2, yRK4 + (params.h / 2) * k1);
+                let k3 = f(t + params.h / 2, yRK4 + (params.h / 2) * k2);
+                let k4 = f(t + params.h, yRK4 + params.h * k3);
+                let yRK4_next = yRK4 + (params.h / 6) * (k1 + 2 * k2 + 2 * k3 + k4);
+
+                // Actualizar valores
+                yH = yH_next;
+                yRK4 = yRK4_next;
+            }
+
+            updateUI();
+        }
+
+        // --- 5. ACTUALIZACIÓN DE INTERFAZ Y RENDERIZADO ---
+        function updateUI() {
+            updateStatsCards();
+            renderTable();
+            renderCharts();
+        }
+
+        function updateStatsCards() {
+            let maxErrH = Math.max(...simulationData.map(d => d.errRelH));
+            let maxErrRK4 = Math.max(...simulationData.map(d => d.errRelRK4));
+
+            document.getElementById('statErrorHeun').textContent = maxErrH.toFixed(4) + ' %';
+            document.getElementById('statErrorRK4').textContent = maxErrRK4.toFixed(6) + ' %';
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+
+            simulationData.forEach(d => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition-colors";
+                tr.innerHTML = `
+                    <td class="p-2.5 text-center font-bold">${d.step}</td>
+                    <td class="p-2.5 text-center">${d.t.toFixed(2)}</td>
+                    <td class="p-2.5 text-right font-semibold text-blue-600">${d.yEx.toFixed(4)}</td>
+                    <td class="p-2.5 text-right font-semibold text-amber-600">${d.yH.toFixed(4)}</td>
+                    <td class="p-2.5 text-right text-slate-500">${d.errAbsH.toFixed(4)}</td>
+                    <td class="p-2.5 text-right font-medium text-amber-600">${d.errRelH.toFixed(4)}%</td>
+                    <td class="p-2.5 text-right font-semibold text-emerald-600">${d.yRK4.toFixed(4)}</td>
+                    <td class="p-2.5 text-right text-slate-500">${d.errAbsRK4.toFixed(6)}</td>
+                    <td class="p-2.5 text-right font-medium text-emerald-600">${d.errRelRK4.toFixed(6)}%</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderCharts() {
+            const labels = simulationData.map(d => d.t.toFixed(2));
+            const dataEx = simulationData.map(d => d.yEx);
+            const dataH = simulationData.map(d => d.yH);
+            const dataRK4 = simulationData.map(d => d.yRK4);
+
+            const errH = simulationData.map(d => d.errRelH);
+            const errRK4 = simulationData.map(d => d.errRelRK4);
+
+            // Destruir instancias previas
+            if (chartSolucionesInstance) chartSolucionesInstance.destroy();
+            if (chartErroresInstance) chartErroresInstance.destroy();
+
+            // Gráfica de Soluciones
+            const ctxSol = document.getElementById('chartSoluciones').getContext('2d');
+            chartSolucionesInstance = new Chart(ctxSol, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Solución Analítica (Exacta)',
+                            data: dataEx,
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.05)',
+                            borderWidth: 3,
+                            pointRadius: 3,
+                            fill: true,
+                            tension: 0.2
+                        },
+                        {
+                            label: 'Método de Heun (RK2)',
+                            data: dataH,
+                            borderColor: '#f59e0b',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            pointRadius: 4,
+                            pointStyle: 'rectRot',
+                            fill: false
+                        },
+                        {
+                            label: 'Runge-Kutta 4 (RK4)',
+                            data: dataRK4,
+                            borderColor: '#10b981',
+                            borderWidth: 2,
+                            pointRadius: 3,
+                            pointStyle: 'circle',
+                            fill: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { mode: 'index', intersect: false }
+                    },
+                    scales: {
+                        x: { title: { display: true, text: 'Tiempo t (Semanas)' } },
+                        y: { title: { display: true, text: 'Adultos Mayores (Personas)' } }
+                    }
+                }
+            });
+
+            // Gráfica de Errores
+            const ctxErr = document.getElementById('chartErrores').getContext('2d');
+            chartErroresInstance = new Chart(ctxErr, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Error Relativo % Heun',
+                            data: errH,
+                            borderColor: '#f59e0b',
+                            backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.2
+                        },
+                        {
+                            label: 'Error Relativo % RK4',
+                            data: errRK4,
+                            borderColor: '#10b981',
+                            borderWidth: 2,
+                            fill: false,
+                            tension: 0.2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top' },
+                        tooltip: { mode: 'index', intersect: false }
+                    },
+                    scales: {
+                        x: { title: { display: true, text: 'Tiempo t (Semanas)' } },
+                        y: { title: { display: true, text: 'Error Relativo (%)' }, beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        // --- 6. EVENT LISTENERS PARA INTERACTIVIDAD ---
+        function setupEventListeners() {
+            const inputN = document.getElementById('inputN');
+            const inputY0 = document.getElementById('inputY0');
+            const inputK = document.getElementById('inputK');
+            const inputTMax = document.getElementById('inputTMax');
+            const selectH = document.getElementById('selectH');
+            const btnReset = document.getElementById('btnReset');
+            const btnExport = document.getElementById('btnExport');
+
+            inputN.addEventListener('input', (e) => {
+                params.N = parseFloat(e.target.value);
+                document.getElementById('valN').textContent = params.N + ' personas';
+                runSimulation();
+            });
+
+            inputY0.addEventListener('input', (e) => {
+                params.y0 = parseFloat(e.target.value);
+                document.getElementById('valY0').textContent = params.y0 + ' personas';
+                runSimulation();
+            });
+
+            inputK.addEventListener('input', (e) => {
+                params.k = parseFloat(e.target.value);
+                document.getElementById('valK').textContent = params.k.toFixed(2) + ' 1/sem';
+                runSimulation();
+            });
+
+            inputTMax.addEventListener('input', (e) => {
+                params.tMax = parseFloat(e.target.value);
+                document.getElementById('valTMax').textContent = params.tMax + ' semanas';
+                runSimulation();
+            });
+
+            selectH.addEventListener('change', (e) => {
+                params.h = parseFloat(e.target.value);
+                runSimulation();
+            });
+
+            btnReset.addEventListener('click', () => {
+                params = { N: 50, y0: 5, k: 0.25, tMax: 12, h: 0.5 };
+                inputN.value = 50; document.getElementById('valN').textContent = '50 personas';
+                inputY0.value = 5; document.getElementById('valY0').textContent = '5 personas';
+                inputK.value = 0.25; document.getElementById('valK').textContent = '0.25 1/sem';
+                inputTMax.value = 12; document.getElementById('valTMax').textContent = '12 semanas';
+                selectH.value = "0.5";
+                runSimulation();
+            });
+
+            // Exportar CSV
+            btnExport.addEventListener('click', () => {
+                let csvContent = "data:text/csv;charset=utf-8,Paso,Tiempo,y_Analitica,y_Heun,ErrorAbs_Heun,ErrorRelPercent_Heun,y_RK4,ErrorAbs_RK4,ErrorRelPercent_RK4\n";
+                simulationData.forEach(d => {
+                    csvContent += `${d.step},${d.t},${d.yEx},${d.yH},${d.errAbsH},${d.errRelH},${d.yRK4},${d.errAbsRK4},${d.errRelRK4}\n`;
+                });
+                const encodedUri = encodeURI(csvContent);
+                const link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                link.setAttribute("download", "simulacion_edo_alfabetizacion.csv");
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+        }
+
+        // --- 7. INICIALIZACIÓN AL CARGAR LA PÁGINA ---
+        window.onload = function() {
+            // Renderizar notaciones matemáticas KaTeX
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false}
+                ]
+            });
+
+            setupEventListeners();
+            runSimulation();
+        };
+    </script>
+</body>
+</html>
